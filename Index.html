@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>言葉道 — Latihan Kotoba JLPT N5 & N4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kurenaido&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --washi:#F3ECDD;
+    --washi-deep:#EAE0CB;
+    --ink:#2A2622;
+    --ink-soft:#5C564C;
+    --torii:#B23A2E;
+    --torii-deep:#8E2C22;
+    --indigo:#2C3A5E;
+    --indigo-soft:#4A5A82;
+    --gold:#B08947;
+    --line:#D8CBA9;
+    --card-bg:#FBF7EC;
+    --good:#3E7A52;
+    --bad:#B23A2E;
+    --shadow: 0 1px 0 rgba(42,38,34,0.04), 0 8px 24px -8px rgba(42,38,34,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--washi);
+    background-image:
+      radial-gradient(circle at 18% 8%, rgba(178,58,46,0.05), transparent 38%),
+      radial-gradient(circle at 85% 92%, rgba(44,58,94,0.05), transparent 42%);
+    color:var(--ink);
+    font-family:'Noto Sans JP', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 18px 60px;
+    min-height:100vh;
+  }
+  /* Header */
+  .brand{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:30px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand-mark{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:26px;
+    color:var(--torii-deep);
+    letter-spacing:0.02em;
+  }
+  .brand-mark .sub{
+    display:block;
+    font-family:'Noto Sans JP', sans-serif;
+    font-size:11px;
+    font-weight:500;
+    color:var(--ink-soft);
+    letter-spacing:0.12em;
+    margin-top:2px;
+  }
+  .brand-tag{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:500;
+    letter-spacing:0.04em;
+    text-align:right;
+    max-width:140px;
+  }
+
+  /* Generic card */
+  .panel{
+    background:var(--card-bg);
+    border:1px solid var(--line);
+    border-radius:4px;
+    box-shadow:var(--shadow);
+    padding:24px;
+    margin-bottom:18px;
+    position:relative;
+  }
+  .panel::before{
+    content:'';
+    position:absolute;
+    top:0; left:0;
+    width:3px; height:100%;
+    background:var(--torii);
+    border-radius:4px 0 0 4px;
+  }
+  .panel.indigo::before{ background:var(--indigo); }
+
+  h2.section-title{
+    font-family:'Shippori Mincho', serif;
+    font-size:19px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 4px;
+  }
+  .section-sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 20px;
+  }
+
+  /* Choice grid for level/mode select */
+  .choice-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .choice-card{
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:6px;
+    padding:18px 14px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s, transform .1s, box-shadow .15s;
+    user-select:none;
+  }
+  .choice-card:hover{ transform:translateY(-2px); box-shadow:0 6px 16px -6px rgba(42,38,34,0.18); }
+  .choice-card.selected{
+    border-color:var(--torii);
+    background:#FBF1EC;
+  }
+  .choice-card .kanji-big{
+    font-family:'Shippori Mincho', serif;
+    font-size:30px;
+    font-weight:800;
+    color:var(--torii-deep);
+    line-height:1;
+  }
+  .choice-card .label{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+    font-weight:500;
+  }
+  .choice-card.selected .kanji-big{ color:var(--torii); }
+
+  /* direction toggle */
+  .dir-toggle{
+    display:flex;
+    border:1.5px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .dir-opt{
+    flex:1;
+    padding:14px 10px;
+    text-align:center;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink-soft);
+    transition:background .15s,color .15s;
+    border-right:1px solid var(--line);
+  }
+  .dir-opt:last-child{ border-right:none; }
+  .dir-opt.selected{
+    background:var(--indigo);
+    color:#fff;
+  }
+  .dir-opt .arrow{ font-size:11px; opacity:.7; display:block; margin-top:2px;}
+
+  /* bab list */
+  .bab-scroll{
+    max-height:260px;
+    overflow-y:auto;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:#fff;
+    padding:6px;
+  }
+  .bab-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:11px 12px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:13.5px;
+    margin-bottom:2px;
+  }
+  .bab-item:hover{ background:var(--washi); }
+  .bab-item.selected{
+    background:var(--torii);
+    color:#fff;
+  }
+  .bab-item .count{
+    font-size:11px;
+    opacity:.7;
+  }
+  .bab-all{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:13px 14px;
+    border:1.5px dashed var(--gold);
+    border-radius:6px;
+    cursor:pointer;
+    margin-bottom:10px;
+    background:#FFF9EC;
+    font-size:13.5px;
+    font-weight:500;
+  }
+  .bab-all.selected{
+    background:var(--gold);
+    color:#fff;
+    border-style:solid;
+  }
+
+  /* slider */
+  .slider-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  input[type=range]{
+    flex:1;
+    -webkit-appearance:none;
+    height:6px;
+    border-radius:3px;
+    background:var(--line);
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:22px; height:22px;
+    border-radius:50%;
+    background:var(--torii);
+    border:3px solid #fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.25);
+    cursor:pointer;
+  }
+  .slider-val{
+    font-family:'Shippori Mincho', serif;
+    font-size:24px;
+    font-weight:800;
+    color:var(--torii-deep);
+    min-width:46px;
+    text-align:center;
+  }
+  .slider-row{ margin-bottom:10px; }
+  .slider-marks{
+    display:flex;
+    justify-content:space-between;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    padding:0 2px;
+  }
+  .custom-row{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+  .custom-check{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+  .custom-check input[type=checkbox]{
+    width:16px; height:16px;
+    accent-color:var(--torii);
+    cursor:pointer;
+  }
+  .custom-input{
+    width:100%;
+    margin-top:10px;
+    padding:12px 14px;
+    border:1.5px solid var(--torii);
+    border-radius:6px;
+    font-size:16px;
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    color:var(--torii-deep);
+    background:#fff;
+    outline:none;
+  }
+  .warn-note{
+    font-size:11.5px;
+    color:var(--torii-deep);
+    margin-top:8px;
+    background:#FBF1EC;
+    border-radius:4px;
+    padding:8px 10px;
+  }
+
+  /* bab multi-select */
+  .bab-item{
+    position:relative;
+    padding-left:42px;
+  }
+  .bab-item .checkbox{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    width:18px; height:18px;
+    border-radius:4px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .bab-item.selected .checkbox{
+    background:var(--torii);
+    border-color:var(--torii);
+  }
+  .bab-item.selected .checkbox::after{
+    content:'✓';
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+  }
+  .bab-item.selected{
+    background:#FBF1EC;
+    color:var(--ink);
+  }
+  .bab-selected-summary{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:10px;
+    padding:8px 10px;
+    background:var(--washi);
+    border-radius:4px;
+  }
+  .bab-selected-summary b{ color:var(--torii-deep); }
+  .bab-clear{
+    font-size:11.5px;
+    color:var(--indigo);
+    text-decoration:underline;
+    cursor:pointer;
+    margin-left:8px;
+  }
+
+  /* romaji toggle */
+  .romaji-toggle-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:12px;
+    padding:7px 14px;
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    background:#fff;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:border-color .12s, color .12s;
+  }
+  .romaji-toggle-btn:hover{ border-color:var(--indigo-soft); color:var(--indigo); }
+  .romaji-toggle-btn .eye{ font-size:13px; }
+  .question-reading{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-weight:500;
+    min-height:21px;
+  }
+  .question-reading.hidden-romaji{
+    filter:blur(5px);
+    user-select:none;
+  }
+
+  /* primary button */
+  .btn-primary{
+    display:block;
+    width:100%;
+    background:var(--torii);
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:16px;
+    font-size:15px;
+    font-weight:700;
+    font-family:'Noto Sans JP', sans-serif;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    transition:background .15s, transform .1s;
+    margin-top:6px;
+  }
+  .btn-primary:hover{ background:var(--torii-deep); }
+  .btn-primary:active{ transform:scale(0.99); }
+  .btn-primary:disabled{ background:#C9BFA8; cursor:not-allowed; }
+  .btn-secondary{
+    display:block;
+    width:100%;
+    background:transparent;
+    color:var(--indigo);
+    border:1.5px solid var(--indigo);
+    border-radius:6px;
+    padding:14px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:10px;
+  }
+  .btn-secondary:hover{ background:#EEF0F6; }
+
+  /* Quiz screen */
+  .quiz-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .progress-track{
+    flex:1;
+    height:6px;
+    background:var(--line);
+    border-radius:3px;
+    margin:0 14px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--indigo);
+    transition:width .25s ease;
+  }
+  .quiz-counter{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .quiz-exit{
+    font-size:12px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    text-decoration:underline;
+    white-space:nowrap;
+  }
+
+  .question-card{
+    background:var(--card-bg);
+    border:1px solid var(--line);
+    border-radius:6px;
+    box-shadow:var(--shadow);
+    padding:38px 24px;
+    text-align:center;
+    margin-bottom:20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .question-card .bab-tag{
+    position:absolute;
+    top:14px; left:18px;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    background:var(--washi);
+    border-radius:10px;
+    padding:3px 10px;
+    font-weight:600;
+  }
+  .question-eyebrow{
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--torii);
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .question-word{
+    font-family:'Shippori Mincho', serif;
+    font-size:42px;
+    font-weight:800;
+    color:var(--ink);
+    line-height:1.25;
+    word-break:break-word;
+  }
+  .question-reading{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-weight:500;
+  }
+
+  .options-grid{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt-btn{
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:6px;
+    padding:16px 18px;
+    text-align:left;
+    font-size:15px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .12s, background .12s;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .opt-btn .opt-letter{
+    width:26px; height:26px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .opt-btn:hover:not(:disabled){ border-color:var(--indigo-soft); }
+  .opt-btn:disabled{ cursor:default; }
+  .opt-btn.correct{
+    border-color:var(--good);
+    background:#EFF7F0;
+  }
+  .opt-btn.correct .opt-letter{ background:var(--good); border-color:var(--good); color:#fff; }
+  .opt-btn.wrong{
+    border-color:var(--bad);
+    background:#FBEDEB;
+  }
+  .opt-btn.wrong .opt-letter{ background:var(--bad); border-color:var(--bad); color:#fff; }
+  .opt-btn.dim{ opacity:.55; }
+
+  .feedback-banner{
+    margin-top:16px;
+    padding:13px 16px;
+    border-radius:6px;
+    font-size:13.5px;
+    font-weight:600;
+    text-align:center;
+  }
+  .feedback-banner.good{ background:#EFF7F0; color:var(--good); }
+  .feedback-banner.bad{ background:#FBEDEB; color:var(--bad); }
+
+  /* result screen */
+  .result-hero{
+    text-align:center;
+    padding:36px 20px;
+  }
+  .result-score{
+    font-family:'Shippori Mincho', serif;
+    font-size:64px;
+    font-weight:800;
+    color:var(--torii-deep);
+    line-height:1;
+  }
+  .result-score .of{
+    font-size:24px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .result-label{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-weight:500;
+  }
+  .result-bar-wrap{
+    height:10px;
+    background:var(--line);
+    border-radius:5px;
+    overflow:hidden;
+    margin:20px 0 6px;
+  }
+  .result-bar{
+    height:100%;
+    transition:width .6s ease;
+  }
+  .review-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:13px 0;
+    border-bottom:1px solid var(--line);
+    gap:12px;
+  }
+  .review-item:last-child{ border-bottom:none; }
+  .review-q{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .review-meta{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:3px;
+  }
+  .review-status{
+    font-size:11px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:10px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .review-status.good{ background:#EFF7F0; color:var(--good); }
+  .review-status.bad{ background:#FBEDEB; color:var(--bad); }
+
+  .footer-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:30px;
+    opacity:.7;
+  }
+
+  @media (max-width:420px){
+    .question-word{ font-size:34px; }
+    .result-score{ font-size:50px; }
+    .choice-card .kanji-big{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+<div id="root" class="app"></div>
+
+<script>
+// ====================== DATA ======================
+const N5_DATA = {
+1: [
+["わたし","watashi","saya"],["わたしたち","watashitachi","kami, kita"],["あなた","anata","anda, kamu"],
+["あの ひと","ano hito","orang itu"],["あの かた","ano kata","orang itu (sopan)"],["せんせい","sensei","guru"],
+["きょうし","kyoushi","pengajar"],["がくせい","gakusei","mahasiswa/pelajar"],["かいしゃいん","kaishain","karyawan perusahaan"],
+["しゃいん","shain","karyawan ~"],["いしゃ","isha","dokter"],["けんきゅうしゃ","kenkyuusha","peneliti"],
+["エンジニア","enjinia","insinyur"],["だいがく","daigaku","universitas"],["びょういん","byouin","rumah sakit"],
+["ぎんこう","ginkou","bank"],["~さい","~sai","~tahun (umur)"],["なんさい","nansai","berapa umur"],
+["おいくつ","oikutsu","berapa umur (sopan)"],["はい","hai","ya"],["いいえ","iie","tidak"],
+["しつれいですが","shitsurei desu ga","maaf, permisi"],["おなまえは？","onamae wa?","nama anda?"],
+["~さん","~san","saudara/i ~"],["かた","kata","orang (sopan)"],["かいぎ","kaigi","rapat"],
+["パーティー","paatii","pesta"],["~ねんせい","~nensei","murid kelas ~"]
+],
+2: [
+["これ","kore","ini"],["それ","sore","itu"],["あれ","are","itu (jauh)"],["この～","kono~","~ ini"],
+["その～","sono~","~ itu"],["あの～","ano~","~ itu (jauh)"],["ほん","hon","buku"],
+["じしょ","jisho","kamus"],["ざっし","zasshi","majalah"],["しんぶん","shinbun","koran"],
+["ノート","nooto","buku catatan"],["てちょう","techou","buku agenda"],["めいし","meishi","kartu nama"],
+["カード","kaado","kartu"],["てがみ","tegami","surat"],["はがき","hagaki","kartu pos"],
+["きって","kitte","perangko"],["えんぴつ","enpitsu","pensil"],["ボールペン","boorupen","pulpen"],
+["シャープペンシル","shaapupenshiru","pensil mekanik"],["かさ","kasa","payung"],["かばん","kaban","tas"],
+["テープ","teepu","kaset/pita"],["テープレコーダー","teepu rekoodaa","tape recorder"],["テレビ","terebi","televisi"],
+["ラジオ","rajio","radio"],["カメラ","kamera","kamera"],["コンピューター","konpyuutaa","komputer"],
+["つくえ","tsukue","meja"],["いす","isu","kursi"],["チョコレート","chokoreeto","coklat"],
+["コーヒー","koohii","kopi"],["くつ","kutsu","sepatu"],["かさ","kasa","payung"],
+["とけい","tokei","jam"],["くるま","kuruma","mobil"],["なん／なに","nan/nani","apa"],
+["そうです","sou desu","begitu, benar"],["そうですか","sou desu ka","oh begitu"],["ちがいます","chigaimasu","salah, bukan"],
+["～か","~ka","atau ~"],["～や～など","~ya~nado","~ dan ~ dan lain-lain"],["～の","~no","milik ~ / kepunyaan"],
+["コーヒーカップ","koohii kappu","cangkir kopi"],["これから おせわになります","kore kara osewa ni narimasu","mohon bantuannya ke depan"],
+["どうぞ よろしく おねがいします","douzo yoroshiku onegaishimasu","senang berkenalan dengan anda"]
+],
+3: [
+["ここ","koko","sini"],["そこ","soko","situ"],["あそこ","asoko","sana"],["どこ","doko","mana"],
+["こちら","kochira","sebelah sini (sopan)"],["そちら","sochira","sebelah situ"],["あちら","achira","sebelah sana"],
+["どちら","dochira","sebelah mana"],["きょうしつ","kyoushitsu","ruang kelas"],["しょくどう","shokudou","kantin"],
+["じむしょ","jimusho","kantor"],["かいぎしつ","kaigishitsu","ruang rapat"],["うけつけ","uketsuke","resepsionis"],
+["ロビー","robii","lobi"],["へや","heya","kamar"],["トイレ／おてあらい","toire/otearai","toilet"],
+["かいだん","kaidan","tangga"],["エレベーター","erebeetaa","lift"],["エスカレーター","esukareetaa","eskalator"],
+["くつや","kutsuya","toko sepatu"],["~や","~ya","toko ~"],["ゆうびんきょく","yuubinkyoku","kantor pos"],
+["でんき／でんきや","denki/denkiya","listrik/toko elektronik"],["はな／はなや","hana/hanaya","bunga/toko bunga"],
+["やすみ","yasumi","libur, istirahat"],["うち","uchi","rumah"],["おくに","okuni","negara (sopan)"],
+["かいしゃ","kaisha","perusahaan"],["スーパー","suupaa","supermarket"],["にほん","nihon","Jepang"],
+["かいがい／がいこく","kaigai/gaikoku","luar negeri"],["みなさん","minasan","semua orang"],["どうぞ","douzo","silakan"],
+["これ／それ／あれ をください","kore/sore/are o kudasai","tolong berikan ini/itu"],["かいぎちゅう","kaigichuu","sedang rapat"]
+],
+4: [
+["いま","ima","sekarang"],["～じ（時）","~ji","jam ~"],["～ふん（分）","~fun","~ menit"],
+["はん","han","setengah, separuh"],["なんじ","nanji","jam berapa"],["なんぷん","nanpun","menit berapa"],
+["ごぜん","gozen","pagi (AM)"],["ごご","gogo","siang/sore (PM)"],["なんようび","nanyoubi","hari apa"],
+["げつようび","getsuyoubi","Senin"],["かようび","kayoubi","Selasa"],["すいようび","suiyoubi","Rabu"],
+["もくようび","mokuyoubi","Kamis"],["きんようび","kinyoubi","Jumat"],["どようび","doyoubi","Sabtu"],
+["にちようび","nichiyoubi","Minggu"],["なんようび","nanyoubi","hari apa"],["きのう","kinou","kemarin"],
+["きょう","kyou","hari ini"],["あした","ashita","besok"],["けさ","kesa","pagi ini"],
+["こんばん","konban","malam ini"],["やすみ","yasumi","libur"],["たんじょうび","tanjoubi","ulang tahun"],
+["いつ","itsu","kapan"],["まいあさ","maiasa","setiap pagi"],["まいばん","maiban","setiap malam"],
+["まいにち","mainichi","setiap hari"],["～から　～まで","~kara~made","dari ~ sampai ~"],
+["ねます","nemasu","tidur"],["おきます","okimasu","bangun"],["はたらきます","hatarakimasu","bekerja"],
+["やすみます","yasumimasu","libur, istirahat"],["がっこう","gakkou","sekolah"],["デパート","depaato","departement store"],
+["ぎんこう","ginkou","bank"],["ゆうびんきょく","yuubinkyoku","kantor pos"],["としょかん","toshokan","perpustakaan"],
+["びじゅつかん","bijutsukan","museum seni"]
+],
+5: [
+["いきます","ikimasu","pergi"],["きます","kimasu","datang"],["かえります","kaerimasu","pulang"],
+["がっこう","gakkou","sekolah"],["スーパー","suupaa","supermarket"],["えき","eki","stasiun"],
+["ひこうき","hikouki","pesawat"],["くるま","kuruma","mobil"],["タクシー","takushii","taksi"],
+["じてんしゃ","jitensha","sepeda"],["でんしゃ","densha","kereta"],["ちかてつ","chikatetsu","kereta bawah tanah"],
+["バス","basu","bus"],["ふね","fune","kapal"],["あるいて","aruite","jalan kaki"],
+["～で","~de","dengan (alat transportasi)"],["どこへも","dokoemo","ke mana pun (tidak)"],
+["ひとりで","hitori de","sendirian"],["～と","~to","dengan ~ (orang)"],["～や","~ya","dan (tidak lengkap)"],
+["いつ","itsu","kapan"],["せんしゅう","senshuu","minggu lalu"],["こんしゅう","konshuu","minggu ini"],
+["らいしゅう","raishuu","minggu depan"],["せんげつ","sengetsu","bulan lalu"],["こんげつ","kongetsu","bulan ini"],
+["らいげつ","raigetsu","bulan depan"],["きょねん","kyonen","tahun lalu"],["こんねん／ことし","kotoshi","tahun ini"],
+["らいねん","rainen","tahun depan"],["せんじつ","senjitsu","bebera
